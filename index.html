@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <title>hello,angular2</title>
+    <!--模块加载器-->
+    <script type="text/javascript" src="lib/system@0.16.11.js"></script>
+    <!--Angular2模块库-->
+    <script type="text/javascript" src="lib/angular2.dev.js"></script>
+	<script>
+    	//设置模块加载规则
+    	System.baseURL = document.baseURI;
+		System.config({
+        	map:{traceur:"lib/traceur"},
+			traceurOptions: {annotations: true}
+		});
+	</script>
+</head>
+<body>
+	<!--组件渲染锚点-->
+	<todo-app></tudo-app>
+    
+    <!--定义一个ES6脚本元素-->
+    <script type="module">
+    	//从模块库引入三个类型定义
+        import {Component,View,NgFor,bootstrap, EventEmitter} from "angular2/angular2";
+        import {formDirectives} from "angular2/forms";
+
+        @Component({
+            selector: 'task',
+            properties: ['task'],
+            events: ['remove']
+        })
+        @View({
+            directives: [formDirectives],
+            styles: [`
+                li a {
+                    margin-left: 10px;
+                    font-size: 0.8em;
+                }
+                li.done span {
+                    text-decoration: line-through;
+                    color: green;
+                    font-style: italic;
+                }
+            `],
+            template: `
+                <li [class.done]="task.done">
+                    <span (click)="toggle()">
+                        <input type="checkbox" [ng-model]="task.done" />
+                        {{ task.title }}
+                    </span>
+                    <a href="javascript:;" (click)="removeClicked()">删除</a>
+                </li>
+            `
+        })
+        class Task{
+            constructor() {
+                this.remove = new EventEmitter();
+            }
+
+            toggle() {
+                this.task.done = !this.task.done;
+            }
+
+            removeClicked() {
+                this.remove.next();
+            }
+        }
+
+        //组件定义
+        @Component({ selector: "todo-app" })
+        @View({
+            directives:[Task, NgFor, formDirectives],
+            template: `
+            <h3>Todo App</h3>
+            <ul>
+                <task
+                    *ng-for="#task of tasks; #i=index"
+                    [task]="task"
+                    (remove)="removeTask(i)"
+                ></task>
+            </ul>
+            <form #f="form"
+                  (submit)="addTask(f.value);"
+                  >
+                <input type="text" ng-control="title" [(ng-model)]="title" />
+                <button type="submit">添加</button>
+            </form>
+            
+            `
+        })
+        class TodoApp{
+            constructor() {
+                this.tasks = [
+                    { title: '吃饭', done: true },
+                    { title: '工作', done: false }
+                ];
+                this.title = "";
+            }
+
+            addTask(data) {
+                this.tasks.push({ title: data.title, done: false });
+                this.title = "";
+            }
+
+            removeTask(index) {
+                this.tasks.splice(index, 1);
+            }
+        }
+        
+        //渲染组件
+        bootstrap(TodoApp);
+    </script>
+</body>
+</html>
