@@ -1,7 +1,7 @@
-System.baseURL = document.baseURI;
+System.baseURL = '/';
 System.config({
 	map:{
-		traceur:"lib/traceur"
+		traceur: 'lib/traceur'
 	},
 	traceurOptions: {
 		annotations: true,
