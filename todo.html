@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-    <title>hello,angular2</title>
+    <title>待办事项</title>
     <!--模块加载器-->
     <script type="text/javascript" src="lib/system@0.16.11.js"></script>
     <!--Angular2模块库-->
@@ -10,7 +10,7 @@
     <script type="text/javascript" src="system.config.js"></script>
 </head>
 <body>
-  <a href="/">Back</a>
+  <a href="/">返回</a>
   <!--组件渲染锚点-->
   <todo-app></tudo-app>
     
@@ -67,7 +67,7 @@
         @View({
             directives:[Task, NgFor, formDirectives],
             template: `
-            <h3>Todo App</h3>
+            <h3>待办事项</h3>
             <ul>
                 <task
                     *ng-for="#task of tasks; #i=index"
