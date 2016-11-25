@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+    <title>蕃茄时钟</title>
+    <!--模块加载器-->
+    <script type="text/javascript" src="lib/system@0.16.11.js"></script>
+    <!--Angular2模块库-->
+    <script type="text/javascript" src="lib/angular2.dev.js"></script>
+    <script type="text/javascript" src="system.config.js"></script>
+</head>
+<body>
+  <a href="/">Back</a>
+  <!--组件渲染锚点-->
+  <timer-app></timer-app>
+    
+    <!--定义一个ES6脚本元素-->
+    <script type="module">
+    //从模块库引入三个类型定义
+    import {Component,View,NgIf,bootstrap} from "angular2/angular2";
+
+    //组件定义
+    @Component({
+      selector: 'timer-app'
+    })
+    @View({
+        directives: [NgIf],
+        styles: [
+          `
+          h1.working { color: green; }
+          `
+        ],
+        template: `
+          <h3>蕃茄时钟</h3>
+          <h1 [class.working]="working">{{ state }} {{ output }}</h1>
+          <button (click)="startTimer()"
+                  *ng-if="!startTime"
+                  >开始</button>
+          `
+    })
+    class TimerApp{
+        constructor() {
+            this.durations = [3, 8];
+            this.startTime = null;
+            this.output = '开始工作吧';
+            this.timer = null;
+            this.working = false;
+            this.state = '';
+        }
+
+        toggleState() {
+          this.working = !this.working;
+          this.state = this.working ? '工作' : '休息'
+          this.startTime = new Date().getTime();
+        }
+
+        startTimer() {
+          this.toggleState();
+          this.calculateRestTime();
+          this.timer = setInterval(() => this.calculateRestTime(), 1000)
+        }
+
+        getDuration() {
+          return this.durations[this.working ? 1 : 0];
+        }
+
+        calculateRestTime() {
+          const duration = this.getDuration();
+          const currentTime = new Date().getTime();
+          const costTime = Math.floor((currentTime - this.startTime) / 1000);
+
+          if (costTime > duration) {
+            clearInterval(this.timer);
+
+            if (this.working) {
+              setTimeout(() => this.startTimer(), 1000);
+            } else {
+              this.startTime = null;
+              this.output = "开始工作吧";
+              this.state = '';
+            }
+          } else {
+            this.output = `${costTime} 秒`;
+          }
+        }
+    }
+    
+    //渲染组件
+    bootstrap(TimerApp);
+    </script>
+</body>
+</html>
