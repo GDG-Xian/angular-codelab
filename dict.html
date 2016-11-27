@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+    <title>有道词典</title>
+    <!--模块加载器-->
+    <script type="text/javascript" src="lib/system@0.16.11.js"></script>
+    <!--Angular2模块库-->
+    <script type="text/javascript" src="lib/angular2.dev.js"></script>
+    <script type="text/javascript" src="system.config.js"></script>
+</head>
+<body>
+  <a href="/">返回</a>
+  <!--组件渲染锚点-->
+  <dict-app></dict-app>
+    
+    <!--定义一个ES6脚本元素-->
+    <script type="module">
+      //从模块库引入三个类型定义
+        import {Component,View,NgFor,bootstrap,EventEmitter} from "angular2/angular2";
+        import {formDirectives} from "angular2/forms";
+
+        const keyFrom = 'Transit';
+        const key = '597592531';
+        // const apiUrl = `http://fanyi.youdao.com/openapi.do?keyfrom=${keyFrom}&key=${key}&type=data&doctype=json&version=1.1&q=`;
+        const apiUrl = `http://dict.baidu.com/s?device=pc&from=home&q=`;
+
+        //组件定义
+        @Component({ selector: 'dict-app' })
+        @View({
+            directives: [formDirectives],
+            template: `
+            <h3>有道词典</h3>
+            <form #f="form" (submit)="search(f.value)">
+                <input type="text" ng-control="word" />
+                <button>查询</button>
+            </form>
+            <pre>{{ result }}</pre>
+            `
+        })
+        class DictApp {
+            constructor() {
+                this.result = '';
+                this.dicts = {
+                    "word": "词",
+                    "test": "测试"
+                }
+            }
+
+            search(value) {
+                this.result = this.dicts[value.word];
+                // fetch(`${apiUrl}${value.word}`, { mode: 'no-cors', method: 'GET' })
+                //     .then(function(response) { return response.text(); })
+                //     .then(function(body) { console.log(body); })
+            }
+        }
+        
+        //渲染组件
+        bootstrap(DictApp);
+    </script>
+</body>
+</html>
