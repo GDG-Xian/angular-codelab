@@ -31,6 +31,7 @@
             directives: [formDirectives],
             template: `
             <h3>有道词典</h3>
+            <blockquote>仅支持两个单词：word, test</blockquot>
             <form #f="form" (submit)="search(f.value)">
                 <input type="text" ng-control="word" />
                 <button>查询</button>
